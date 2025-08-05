@@ -8,10 +8,9 @@ export const fetchBooks = async (): Promise<Book[]> => {
   try {
     const { data } = await axios.get(BASE_URL, {
       params: {
-        q: "subject:fiction",
-        orderBy: "newest",
+        q: "subject:romance",
         langRestrict: "en",
-        maxResults: 20,
+        maxResults: 40,
         key: API_KEY,
       },
     });
@@ -19,16 +18,20 @@ export const fetchBooks = async (): Promise<Book[]> => {
     if (!data.items) return [];
 
     return data.items
-      .filter((book: any) => book.volumeInfo.language === "en")
+      .filter((book: any) => {
+        const info = book.volumeInfo;
+        return info.language === "en";
+      })
       .map((book: any) => ({
         id: book.id,
         title: book.volumeInfo.title,
+        authors: book.volumeInfo.authors || ["Unknown"],
         categories: book.volumeInfo.categories,
         image: book.volumeInfo.imageLinks?.thumbnail,
         averageRating: book.volumeInfo.averageRating,
       }));
   } catch (error) {
     console.error("Error fetching books", error);
-    throw error;
+    return [];
   }
 };
