@@ -8,7 +8,7 @@ type Props = {
 
 export const StarRating = ({ rating }: Props) => {
   if (rating === undefined) {
-    return <Text className="text-md mt-2 text-gray-400">No rating</Text>;
+    return <Text className="text-md mt-1 text-background-30">No rating</Text>;
   }
 
   const fullStars = Math.floor(rating);

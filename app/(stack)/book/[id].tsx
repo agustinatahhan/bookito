@@ -1,16 +1,24 @@
-import { CategoriesTags } from "@/components/categories/Categories";
 import { ExpandableDescription } from "@/components/description/ExpandableDescription";
 import { StarRating } from "@/components/rating/StarRating";
 import { useBooksDetail } from "@/hooks/useBook";
-import { useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 
 const BookDetail = () => {
   const { id } = useLocalSearchParams();
+  const router = useRouter();
 
-  const { data: book, isLoading, isError } = useBooksDetail(id as string);
-  const imageUrl = book?.image || "No image";
+  const { data: book } = useBooksDetail(id as string);
+  const imageUrl = book?.image || "https://via.placeholder.com/150x200";
 
   const stripHtmlTags = (html: string) => {
     return html.replace(/<[^>]*>/g, "").trim();
@@ -21,41 +29,83 @@ const BookDetail = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-background-base">
-      <ScrollView>
-        <View className="flex-col mt-4 mx-5">
-          {/* Image + title */}
-          <View className="flex-row gap-2 max-w-[220px]">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 40 }}
+      >
+        <View className="mt-4 mx-5">
+          {/* Header Icons */}
+          <View className="flex-row justify-between items-center mb-6">
+            <Pressable onPress={() => router.back()}>
+              <Ionicons size={28} name="arrow-back-outline" color="#80807e" />
+            </Pressable>
+            <Ionicons size={24} name="bookmark-outline" color="#a395c9" />
+          </View>
+
+          {/* Image */}
+          <View className="items-center mb-5">
             <Image
               source={{ uri: imageUrl }}
-              className="w-[150px] h-[200px] rounded-lg"
+              className="w-[150px] h-[200px] rounded-xl shadow-md shadow-black/5"
             />
-            <View className="flex-col mt-5 gap-1">
-              <Text
-                className="font-bold text-2xl text-background-50"
-                numberOfLines={3}
-                style={{ flexShrink: 1 }}
-              >
-                {book?.title}
+          </View>
+
+          {/* Title & Author */}
+          <View className="items-center mb-2">
+            <Text className="font-bold text-2xl text-background-50 text-center">
+              {book?.title}
+            </Text>
+            <Text className="font-medium text-base text-background-40 text-center">
+              {book?.authors}
+            </Text>
+          </View>
+
+          {/* Rating */}
+          <View className="items-center mt-2 mb-4">
+            <StarRating rating={book?.averageRating} />
+          </View>
+
+          {/* Extra info: Pages & Views */}
+          <View className="flex-row items-center gap-6 mt-2 justify-center mb-4">
+            <View className="flex-row items-center gap-1">
+              <Ionicons name="book-outline" size={18} color="#a395c9" />
+              <Text className="text-sm text-background-40">
+                {book?.pageCount}p
               </Text>
-              <Text className="font-medium text-lg text-background-40 ">
-                {book?.authors}
+            </View>
+            <View className="flex-row items-center gap-1">
+              <Ionicons name="eye-outline" size={18} color="#a395c9" />
+              <Text className="text-sm text-background-40">
+                {book?.ratingsCount} views
               </Text>
-              <StarRating rating={book?.averageRating} />
             </View>
           </View>
+
           {/* Categories */}
           <View className="mt-4">
-            <Text className="font-bold text-background-50 text-xl">
+            <Text className="font-bold text-background-50 text-xl mb-2">
               Categories
             </Text>
-            <CategoriesTags categories={book?.categories} />
+            <View className="flex-row flex-wrap gap-2">
+              {book?.categories?.map((genre, idx) => (
+                <View
+                  key={idx}
+                  className="bg-foreground-10 px-3 py-1 rounded-full"
+                >
+                  <Text className="text-sm text-foreground-50">{genre}</Text>
+                </View>
+              ))}
+            </View>
           </View>
+
           {/* Description */}
-          <View className="mt-4">
-            <Text className="font-bold text-background-50 text-xl">
+          <View className="mt-6">
+            <Text className="font-bold text-background-50 text-xl mb-2">
               Description
             </Text>
-            <ExpandableDescription description={cleanDescription} />
+            <Text className="text-base text-background-40 leading-relaxed">
+              <ExpandableDescription description={cleanDescription} />
+            </Text>
           </View>
         </View>
       </ScrollView>
