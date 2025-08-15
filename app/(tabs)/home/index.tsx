@@ -2,7 +2,7 @@ import { BooksCardsList } from "@/components/books/BookCardsList";
 import { SearchBar } from "@/components/searchBar/SearchBar";
 import { useBooks, useBookSearch } from "@/hooks/useBook";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Keyboard, SafeAreaView, Text } from "react-native";
+import { ActivityIndicator, Keyboard, SafeAreaView } from "react-native";
 
 const Home = () => {
   const [query, setQuery] = useState("");
@@ -21,9 +21,9 @@ const Home = () => {
   }, [query]);
   return (
     <SafeAreaView className="flex-1 bg-background-base">
-      <Text className="font-bold text-3xl text-foreground-base mt-4 mb-8 mx-5">
+      {/* <Text className="font-bold text-3xl text-foreground-base mt-4 mb-8 mx-5">
         Bookito
-      </Text>
+      </Text> */}
       <SearchBar query={query} onChange={setQuery} />
       {isLoading && (
         <ActivityIndicator size="small" color="#67598a" className="mt-4" />

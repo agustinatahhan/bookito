@@ -79,6 +79,12 @@ const BookDetail = () => {
                 {book?.ratingsCount} views
               </Text>
             </View>
+            <View className="flex-row items-center gap-1">
+              <Ionicons name="calendar-outline" size={18} color="#a395c9" />
+              <Text className="text-sm text-background-40">
+                {book?.publishedDate?.substring(0, 4)}
+              </Text>
+            </View>
           </View>
 
           {/* Categories */}
